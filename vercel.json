@@ -1,16 +1,16 @@
 {
+  "version": 2,
   "redirects": [
     { "source": "/", "destination": "/app1", "permanent": false }
   ],
   "rewrites": [
     {
-      "source": "/app1/:path*",
-      "destination": "https://cube-animations.vercel.app/:path*"
+      "source": "/app1/(.*)",
+      "destination": "https://cube-animations.vercel.app/$1"
     },
     {
-      "source": "/app2/:path*",
-      "destination": "https://leaders-animation.vercel.app/:path*"
+      "source": "/app2/(.*)",
+      "destination": "https://leaders-animation.vercel.app/$1"
     }
   ]
 }
-
