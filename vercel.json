@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/app1", "permanent": false }
+  ],
+  "rewrites": [
+    {
+      "source": "/app1/:path*",
+      "destination": "https://cube-animations.vercel.app/:path*"
+    },
+    {
+      "source": "/app2/:path*",
+      "destination": "https://leaders-animation.vercel.app/:path*"
+    }
+  ]
+}
+
