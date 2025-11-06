@@ -48,7 +48,7 @@ export default function App2() {
       ease="power3.out"
     />
       <iframe
-        src="https://capture-the-moment.vercel.app"
+        src="https://acm-sigai-events-page.vercel.app/"
         style={{ width: "100%", height: "100%", border: "none" }}
         title="Leaders Animation"
       />

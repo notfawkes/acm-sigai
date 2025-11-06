@@ -81,7 +81,7 @@ export default function App2() {
 
       {/* Iframe */}
       <iframe
-        src="https://leaders-animation.vercel.app"
+        src="https://team-sigai.vercel.app/"
         className="w-full h-full border-none"
         title="Leaders Animation"
       />
