@@ -19,7 +19,7 @@ body {
 }
 
 .logo {
-  background-image: url("./public/image.png");
+  background-image: url("/image.png");
   background-size: cover;
   z-index: 90;
   height: 3rem;

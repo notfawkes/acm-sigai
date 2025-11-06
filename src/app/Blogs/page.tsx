@@ -2,7 +2,7 @@ import "next/image";
 import Header from "../Header";
 import Logo from "../Logo";
 
-export default function App2() {
+export default function App5() {
   const items = [
     {
       label: "Home",
@@ -48,7 +48,7 @@ export default function App2() {
       ease="power3.out"
     />
       <iframe
-        src="https://capture-the-moment.vercel.app"
+        src="https://acm-blogs.vercel.app"
         style={{ width: "100%", height: "100%", border: "none" }}
         title="Leaders Animation"
       />

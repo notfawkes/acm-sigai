@@ -169,7 +169,7 @@ const Header = ({
         <div className="card-nav-content" aria-hidden={!isExpanded}>
           {(items || []).slice(0, 5).map((item, idx) => (            
             <div key={`${item.label}-${idx}`} ref={setCardRef(idx)} className="nav-card" style={{
-              backgroundImage: item.bgImage ? `url(${item.bgImage.src})` : "none",
+              backgroundImage: item.bgImage ? `url(${item.bgImage})` : "none",
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
