@@ -60,7 +60,7 @@ body {
   transform-origin: center;
   transform-style: preserve-3d;
   padding: 0.3px 2.8px;
-  transform: rotateY(calc(var(--i) * calc(360deg / 30))) translateZ(45px);
+  transform: rotateY(calc(var(--i) * calc(360deg / 30))) translateZ(32px); /* Changed from 45px */
   border-top: 2px solid #35146f;
   border-bottom: 2px solid #35146f;
 }
@@ -84,6 +84,6 @@ body {
     line-height: 0.8rem;
     font-size: 0.6rem;
     padding: 0.3px 2px;
-    transform: rotateY(calc(var(--i) * calc(360deg / 30))) translateZ(36px);
+    transform: rotateY(calc(var(--i) * calc(360deg / 30))) translateZ(32px); /* Changed from 36px */
   }
 }

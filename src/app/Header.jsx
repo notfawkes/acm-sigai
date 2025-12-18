@@ -1,7 +1,7 @@
 'use client';
 import Link from "next/link";
 /* eslint-disable no-unused-expressions */
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 // use your own icon import if react-icons is not available
 import { GoArrowUpRight } from 'react-icons/go';
@@ -25,6 +25,102 @@ const Header = ({
   const cardsRef = useRef([]);
   const tlRef = useRef(null);
 
+  // resolve bgImage to a usable URL (supports string, imported image object, data URIs)
+  const resolveImageSrc = (img) => {
+    if (!img) return '';
+    let src = typeof img === 'string' ? img : img?.src ?? img?.default ?? '';
+    if (!src) return '';
+    // Add leading slash for local relative paths, ignore absolute/protocol and data URIs
+    if (!/^([a-z][a-z0-9+.-]*:)?\/\//i.test(src) && !src.startsWith('/') && !src.startsWith('data:')) {
+      src = `/${src}`;
+    }
+    return src;
+  };
+
+  // preload/resolution state for bg images to avoid 404s and provide a fallback
+  const [resolvedBgUrls, setResolvedBgUrls] = useState({});
+
+  useEffect(() => {
+    if (!items || items.length === 0) {
+      setResolvedBgUrls({});
+      return;
+    }
+
+    let active = true;
+    const FALLBACK_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect fill='%23ddd' width='100%' height='100%'/></svg>`;
+    const FALLBACK_DATA_URI = `data:image/svg+xml;utf8,${encodeURIComponent(FALLBACK_SVG)}`;
+
+    const tryImage = (url) =>
+      new Promise((res) => {
+        if (!url) return res(null);
+        if (url.startsWith('data:')) {
+          const img = new Image();
+          img.onload = () => res(url);
+          img.onerror = () => res(null);
+          img.src = url;
+          return;
+        }
+        const img = new Image();
+        img.onload = () => res(url);
+        img.onerror = () => res(null);
+        img.src = url;
+      });
+
+    const candidatesFor = (raw) => {
+      if (!raw) return [];
+      const r = raw;
+      const noLeading = r.startsWith('/') ? r.slice(1) : r;
+      const list = [
+        r,
+        encodeURI(r),
+        `/${noLeading}`,
+        `/${encodeURI(noLeading)}`,
+        `/assets/${noLeading}`,
+        `/images/${noLeading}`,
+        `/static/${noLeading}`,
+      ];
+      return Array.from(new Set(list)).filter(Boolean);
+    };
+
+    (async () => {
+      const map = {};
+      for (let i = 0; i < items.length; i += 1) {
+        const item = items[i];
+        const raw =
+          typeof item?.bgImage === 'string'
+            ? item.bgImage
+            : item?.bgImage?.src ?? item?.bgImage?.default ?? '';
+
+        const resolvedInitial = resolveImageSrc(item?.bgImage);
+        const candidates = resolvedInitial ? [resolvedInitial, ...candidatesFor(raw)] : candidatesFor(raw);
+
+        let found = null;
+        for (const c of candidates) {
+          // eslint-disable-next-line no-await-in-loop
+          const ok = await tryImage(c);
+          if (ok) {
+            found = c;
+            break;
+          }
+        }
+
+        map[i] = found || FALLBACK_DATA_URI;
+      }
+      if (active) setResolvedBgUrls(map);
+    })();
+
+    return () => { active = false; };
+  }, [items]);
+
+  // debug: log resolved bgImage urls to help track 404s
+  useLayoutEffect(() => {
+    (items || []).forEach((item, idx) => {
+      const src = resolvedBgUrls[idx] ?? resolveImageSrc(item?.bgImage);
+      if (!src) console.warn('[Header] missing bgImage src for', item?.label);
+      else console.debug('[Header] bgImage resolved for', item?.label, src);
+    });
+  }, [items, resolvedBgUrls]);
+
   const calculateHeight = () => {
     const navEl = navRef.current;
     if (!navEl) return 260;
@@ -45,7 +141,7 @@ const Header = ({
 
         contentEl.offsetHeight;
 
-        const topBar = 60;
+        const topBar = 75; /* Changed from 60 */
         const padding = 16;
         const contentHeight = contentEl.scrollHeight;
 
@@ -64,7 +160,7 @@ const Header = ({
     const navEl = navRef.current;
     if (!navEl) return null;
 
-    gsap.set(navEl, { height: 60, overflow: 'hidden' });
+    gsap.set(navEl, { height: 75, overflow: 'hidden' }); /* Changed from 60 */
     gsap.set(cardsRef.current, { y: 50, opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
@@ -167,19 +263,25 @@ const Header = ({
         </div>
 
         <div className="card-nav-content" aria-hidden={!isExpanded}>
-          {(items || []).slice(0, 5).map((item, idx) => (            
-            <div key={`${item.label}-${idx}`} ref={setCardRef(idx)} className="nav-card" style={{
-              backgroundImage: item.bgImage ? `url(${item.bgImage})` : "none",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              color: item.textColor,
-              textDecoration: "none",
-            }}>
-              <Link
-                href={item.href || "#"} // default if no href
-                className="nav-card-link-wrapper"
-              >
+          {(items || []).slice(0, 5).map((item, idx) => (
+            <div
+              key={`${item.label}-${idx}`}
+              ref={setCardRef(idx)}
+              className="nav-card"
+              style={{
+                // use preloaded/resolved url if available, otherwise try best-effort resolve and fallback
+                backgroundImage: (() => {
+                  const src = resolvedBgUrls[idx] ?? resolveImageSrc(item?.bgImage);
+                  return src ? `url("${src}")` : 'none';
+                })(),
+                backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+                 backgroundRepeat: 'no-repeat',
+                 color: item.textColor,
+                 textDecoration: 'none',
+               }}
+            >
+              <Link href={item.href || "#"} className="nav-card-link-wrapper">
                 <div className="nav-card-label">{item.label}</div>
               </Link>
               <div className="nav-card-links">
