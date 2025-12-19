@@ -264,35 +264,41 @@ const Header = ({
 
         <div className="card-nav-content" aria-hidden={!isExpanded}>
           {(items || []).slice(0, 5).map((item, idx) => (
-            <div
-              key={`${item.label}-${idx}`}
-              ref={setCardRef(idx)}
-              className="nav-card"
-              style={{
-                // use preloaded/resolved url if available, otherwise try best-effort resolve and fallback
-                backgroundImage: (() => {
-                  const src = resolvedBgUrls[idx] ?? resolveImageSrc(item?.bgImage);
-                  return src ? `url("${src}")` : 'none';
-                })(),
-                backgroundSize: 'cover',
-                 backgroundPosition: 'center',
-                 backgroundRepeat: 'no-repeat',
-                 color: item.textColor,
-                 textDecoration: 'none',
-               }}
-            >
-              <Link href={item.href || "#"} className="nav-card-link-wrapper">
-                <div className="nav-card-label">{item.label}</div>
-              </Link>
-              <div className="nav-card-links">
-                {item.links?.map((lnk, i) => (
-                  <Link key={`${lnk.label}-${i}`} className="nav-card-link" href={lnk.href} aria-label={lnk.ariaLabel}>
-                    <GoArrowUpRight className="nav-card-link-icon" aria-hidden="true" />
-                    {lnk.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
+<Link
+  key={`${item.label}-${idx}`}
+  href={item.href || "#"}
+  className="nav-card nav-card-clickable"
+  ref={setCardRef(idx)}
+  style={{
+    backgroundImage: (() => {
+      const src = resolvedBgUrls[idx] ?? resolveImageSrc(item?.bgImage);
+      return src ? `url("${src}")` : 'none';
+    })(),
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    color: item.textColor,
+    textDecoration: 'none',
+  }}
+>
+  <div className="nav-card-label">{item.label}</div>
+
+  <div className="nav-card-links">
+    {item.links?.map((lnk, i) => (
+      <Link
+        key={`${lnk.label}-${i}`}
+        className="nav-card-link"
+        href={lnk.href}
+        aria-label={lnk.ariaLabel}
+        onClick={(e) => e.stopPropagation()} // critical
+      >
+        <GoArrowUpRight className="nav-card-link-icon" />
+        {lnk.label}
+      </Link>
+    ))}
+  </div>
+</Link>
+
           ))}
         </div>
       </nav>
