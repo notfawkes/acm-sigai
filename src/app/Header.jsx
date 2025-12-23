@@ -249,9 +249,11 @@ const Header = ({
             <div className="hamburger-line" />
           </div>
 
+        <Link href="/" className="card-nav-logo-link" aria-label={logoAlt}>
           <div className="logo-container">
             <Logo />
           </div>
+        </Link>
 
           {/* <button
             type="button"

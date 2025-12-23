@@ -1,17 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/app1/:path*",
-        destination: "https://cube-animations.vercel.app/"
-      },
-      {
-        source: "/app2/:path*",
-        destination: "https://leaders-animation.vercel.app/"
-      }
-    ];
-  }
+  output: "export",          // required for static export
+  images: { unoptimized: true }
 };
 
 module.exports = nextConfig;
