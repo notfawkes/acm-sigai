@@ -48,7 +48,7 @@ export default function App5() {
       ease="power3.out"
     />
       <iframe
-        src="https://acm-blogs.vercel.app"
+        src="https://sigai-blogs.vercel.app/"
         style={{ width: "100%", height: "100%", border: "none" }}
         title="Leaders Animation"
       />

@@ -1,7 +1,6 @@
-/** @type {import('next').NextConfig} */
+/** @type {import('next'). NextConfig} */
 const nextConfig = {
-  output: "export",          // required for static export
-  images: { unoptimized: true }
+output: 'export',
+trailingSlash: true, 
 };
-
 module.exports = nextConfig;

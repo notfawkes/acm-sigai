@@ -49,7 +49,7 @@ export default function App1() {
     />
       {/* Iframe */}
       <iframe
-        src="https://sigai-home.vercel.app/"
+        src="https://sigai-home-nu.vercel.app/"
         className="w-full h-full border-none"
         title="Cube Animations"
       />
